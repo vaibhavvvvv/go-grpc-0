@@ -1,0 +1,53 @@
+// here, we define remote procedure calls that will happen between client and server
+
+syntax= "proto3";
+
+option go_package="./proto";
+
+package greet_service;
+
+service GreetService{
+    rpc SayHello(NoParam) returns (HelloResponse); //unary api
+
+    rpc SayHelloServerStreaming(NamesList) returns (stream HelloResponse);  //server streaming api
+
+    rpc SayHelloClientStreaming(stream HelloRequest) returns (MessagesList);  //client streaming api
+
+    rpc SayHelloBidirectionalStreaming(stream HelloRequest) returns (stream HelloResponse);  //birectional streaming api
+    
+}
+
+message NoParam{};
+
+message HelloRequest{
+    string name = 1;
+}
+
+message NamesList{
+    repeated string names =1;
+}
+
+message MessagesList{
+    repeated string name =1;
+}
+
+message HelloResponse{
+    string message = 1;
+}
+
+//protoc --go_out=. --go-grpc_out=. proto/greet.proto
+
+// The command protoc --go_out=. --go-grpc_out=. proto/greet.proto will generate two Go files from the proto/greet.proto file:
+
+//     greet.pb.go contains the definitions of the protocol buffer messages.
+//     greet_grpc.pb.go contains the definitions of the gRPC service and client interfaces.
+
+// These files can be used to create a gRPC server and client that can communicate with each other.
+
+// Here is an explanation of the command:
+
+//     protoc is the Protocol Buffers compiler.
+//     --go_out=. tells the compiler to generate Go code in the current directory.
+//     --go-grpc_out=. tells the compiler to generate gRPC code in the current directory.
+//     proto/greet.proto is the path to the protocol buffer file that we want to generate code from.
+
